@@ -4,3 +4,4 @@
 **/cmake-build-debug
 **/.vscode
 **/.idea
+**/__pycache__

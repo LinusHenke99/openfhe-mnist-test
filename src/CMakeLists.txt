@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5.1)
 
 add_library(Components
-        LoadImage.cpp)
+        LoadImage.cpp Deserialize.cpp LinTools.cpp)
 
 target_include_directories(Components
         PUBLIC ../include
