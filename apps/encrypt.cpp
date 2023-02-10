@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
     std::cout << "Image: " << std::endl;
     for(int i=0; i<size; i++) {
         for (int j=0; j<size; j++) {
-            char integer = img[i*28 + j] == 0 ? '-' : '+';
+            char integer = img[i*32 + j] == 0 ? '.' : '@';
             std::cout << integer << " ";
         }
         std::cout << std::endl;

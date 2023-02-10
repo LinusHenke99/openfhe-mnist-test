@@ -14,9 +14,9 @@ using namespace lbcrypto;
 
 const std::string FOLDER = "../keys/";
 
-int main(int argc, char** argv) {
+int main (int argc, char** argv) {
 
-    if(argc != 3) {
+    if (argc != 3) {
         std::cout << "args: <mult depth> <mod size>" << std::endl;
         return 0;
     }
@@ -47,27 +47,27 @@ int main(int argc, char** argv) {
     context->EvalMultKeyGen(keys.secretKey);
     std::cout << "Eval. mult. keys generated" << std::endl;
 
-    // std::vector<int> rotations(batchSize - 1);
-    // for(uint32_t i=1; i< batchSize; i++) {
-    //     rotations[i-1] = (int) i;
-    // }
-    // std::cout << "Generating rotation keys..." << std::endl;
-    // context->EvalRotateKeyGen(keys.secretKey, rotations);
-    // std::cout << "Done!" << std::endl;
+    std::vector<int> rotations(batchSize - 1);
+    for (uint32_t i=1; i< batchSize ; i++) {
+        rotations[i-1] = (int) i;
+    }
+    std::cout << "Generating rotation keys..." << std::endl;
+    context->EvalRotateKeyGen(keys.secretKey, rotations);
+    std::cout << "Done!" << std::endl;
 
-    if(!Serial::SerializeToFile(FOLDER + "context.txt", context, SerType::BINARY)) {
+    if (!Serial::SerializeToFile(FOLDER + "context.txt", context, SerType::BINARY)) {
         std::cerr << "Error serializing context." << std::endl;
         std::exit(1);
     }
     std::cout << "Cryptocontext serialized!" << std::endl;
 
-    if(!Serial::SerializeToFile(FOLDER + "publicKey.txt", keys.publicKey, SerType::BINARY)) {
+    if (!Serial::SerializeToFile(FOLDER + "publicKey.txt", keys.publicKey, SerType::BINARY)) {
         std::cerr << "Error serializing public key." << std::endl;
         std::exit(1);
     }
     std::cout << "Public key serialized!" << std::endl;
 
-    if(!Serial::SerializeToFile(FOLDER + "secretKey.txt", keys.secretKey, SerType::BINARY)) {
+    if (!Serial::SerializeToFile(FOLDER + "secretKey.txt", keys.secretKey, SerType::BINARY)) {
         std::cerr << "Error serializing public key." << std::endl;
         std::exit(1);
     }
@@ -86,17 +86,17 @@ int main(int argc, char** argv) {
         std::cerr << "Error opening Mult Key file..." << std::endl;
     }
 
-    // std::ofstream rotKeyFile(FOLDER + "rotKey.txt", std::ios::out | std::ios::binary);
-    // if (rotKeyFile.is_open()) {
-    //     if (!context->SerializeEvalAutomorphismKey(rotKeyFile, SerType::BINARY)) {
-    //         std::cerr << "Error serializing rotation key." << std::endl;
-    //         std::exit(1);
-    //     }
-    //     std::cout << "Rotation key serialized!" << std::endl;
-    //     rotKeyFile.close();
-    // } else {
-    //     std::cerr << "Error opening Mult Key file..." << std::endl;
-    // }
+    std::ofstream rotKeyFile(FOLDER + "rotKey.txt", std::ios::out | std::ios::binary);
+    if (rotKeyFile.is_open()) {
+        if (!context->SerializeEvalAutomorphismKey(rotKeyFile, SerType::BINARY)) {
+            std::cerr << "Error serializing rotation key." << std::endl;
+            std::exit(1);
+        }
+        std::cout << "Rotation key serialized!" << std::endl;
+        rotKeyFile.close();
+    } else {
+        std::cerr << "Error opening Mult Key file..." << std::endl;
+    }
 
     return 0;
 }

@@ -23,6 +23,8 @@ add_executable(keygen
         apps/keygen.cpp)
 add_executable(encrypt
         apps/encrypt.cpp)
+add_executable(test
+        apps/test.cpp)
 
 
 target_link_libraries(test_mnist
@@ -31,6 +33,8 @@ target_link_libraries(keygen
         Components)
 target_link_libraries(encrypt
         Components)
+target_link_libraries(test
+        Components)
 
 
 install(TARGETS test_mnist
@@ -38,4 +42,6 @@ install(TARGETS test_mnist
 install(TARGETS keygen
         RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)
 install(TARGETS encrypt
+        RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)
+install(TARGETS test
         RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)
