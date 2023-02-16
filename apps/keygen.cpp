@@ -47,9 +47,9 @@ int main (int argc, char** argv) {
     context->EvalMultKeyGen(keys.secretKey);
     std::cout << "Eval. mult. keys generated" << std::endl;
 
-    std::vector<int> rotations(batchSize - 1);
-    for (uint32_t i=1; i< batchSize ; i++) {
-        rotations[i-1] = (int) i;
+    std::vector<int> rotations(batchSize/2 - 1);
+    for (uint32_t i=1; i< batchSize/2 ; i++) {
+        rotations[i-1] = (int) -i;
     }
     std::cout << "Generating rotation keys..." << std::endl;
     context->EvalRotateKeyGen(keys.secretKey, rotations);

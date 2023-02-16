@@ -4,17 +4,21 @@
 #include "openfhe.h"
 #include "LinTools.h"
 #include "random_double.h"
+#include "MatrixFormatting.h"
+#include "KeyGen.h"
 
 using namespace lbcrypto;
 
-int main() {
+int main(int argc, char** argv) {
     int seed = time(NULL);
     srand((unsigned) seed);
 
     std::cout << std::fixed;
     std::cout << std::setprecision(2);
 
-    const uint32_t batchSize = 8;
+    uint32_t numCols = std::stoi(argv[1]);
+    uint32_t batchSize = next_power2(numCols);
+    uint32_t numRows = std::stoi(argv[2]);
 
     CCParams<CryptoContextCKKSRNS> parameters;
     parameters.SetBatchSize(batchSize);
@@ -31,30 +35,31 @@ int main() {
 
     context->EvalMultKeyGen(keys.secretKey);
 
-    std::vector<int> rotations(batchSize-1);
-    for (uint32_t i=1; i<= batchSize; i++) {
-        rotations[i-1] = (int) i;
+    std::vector<std::vector<double>> matrix;
+    for(int i=0; i < (int) numRows; i++) {
+        std::vector<double> row;
+        for (int j=0; j<(int) numCols; j++)
+            row.push_back((double) (random_double(0., 1.)));
+
+        matrix.push_back(row);
     }
+
+    std::vector<int> rotations;
+    for (int i=1; i<(int) batchSize; i++)
+        rotations.push_back(i);
+
     context->EvalRotateKeyGen(keys.secretKey, rotations);
+
     std::cout << "Keygen done!\n\n";
 
     std::vector<double> plainText;
-    for (uint32_t i=0; i<batchSize; i++) {
+    for (uint32_t i=0; i<numCols; i++)
         plainText.push_back((double) i);
-    }
 
     Plaintext pl = context->MakeCKKSPackedPlaintext(plainText);
     Ciphertext<DCRTPoly> ct = context->Encrypt(pl, keys.publicKey);
 
     std::cout << "matrix:" << std::endl;
-    std::vector<std::vector<double>> matrix;
-    for(int i=0; i < (int) batchSize/2; i++) {
-        std::vector<double> row;
-        for (int j=0; j<(int) batchSize; j++) {
-            row.push_back((double) (random_double(0., 1.)));
-        }
-        matrix.push_back(row);
-    }
 
     for (auto row: matrix) {
         std::cout << "[\t";
@@ -90,11 +95,10 @@ int main() {
     }
     std::cout << "]" << std::endl << std::endl;
 
-    Ciphertext<DCRTPoly> cipherResult = matrix_multiplication(matrix, ct);
+    Ciphertext<DCRTPoly> cipherResult = matrix_multiplication_diagonals(matrix, ct);
     Plaintext result;
     context->Decrypt(cipherResult, keys.secretKey, &result);
-    result->SetLength(matrix[0].size());
-
+    result->SetLength(batchSize);
     std::cout << result;
 
     return 0;
