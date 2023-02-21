@@ -44,9 +44,7 @@ int main(int argc, char** argv) {
         matrix.push_back(row);
     }
 
-    std::vector<int> rotations;
-    for (int i=1; i<(int) batchSize; i++)
-        rotations.push_back(i);
+    std::vector<int> rotations = genRotations(batchSize);
 
     context->EvalRotateKeyGen(keys.secretKey, rotations);
 
@@ -54,7 +52,7 @@ int main(int argc, char** argv) {
 
     std::vector<double> plainText;
     for (uint32_t i=0; i<numCols; i++)
-        plainText.push_back((double) i);
+        plainText.push_back((double) (i + 1));
 
     Plaintext pl = context->MakeCKKSPackedPlaintext(plainText);
     Ciphertext<DCRTPoly> ct = context->Encrypt(pl, keys.publicKey);
@@ -94,6 +92,8 @@ int main(int argc, char** argv) {
         std::cout << entry << "\t";
     }
     std::cout << "]" << std::endl << std::endl;
+
+    std::cout << "n1 = " << find_n1(4) << std::endl;
 
     Ciphertext<DCRTPoly> cipherResult = matrix_multiplication_diagonals(matrix, ct);
     Plaintext result;

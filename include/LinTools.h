@@ -18,6 +18,8 @@ using namespace lbcrypto;
 std::vector<std::vector<double>> diagonal_transformation(std::vector<std::vector<double>> matrix);
 
 
+Ciphertext<DCRTPoly> total_sum(Ciphertext<DCRTPoly> vector);
+
 
 /*          Product of ciphertext vector and matrix                                                                   */
 Ciphertext<DCRTPoly> matrix_multiplication(
@@ -28,7 +30,6 @@ Ciphertext<DCRTPoly> matrix_multiplication(
         bool masking = true,
         bool transposing = true
 );
-
 
 
 Ciphertext<DCRTPoly> matrix_multiplication_diagonals(std::vector<std::vector<double>> matrix, Ciphertext<DCRTPoly> vector);

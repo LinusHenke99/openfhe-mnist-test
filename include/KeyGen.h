@@ -9,14 +9,13 @@
 #include <set>
 #include <math.h>
 #include <iostream>
+#include <bitset>
 
 #include "MatrixFormatting.h"
 
 
 std::vector<int> genRotations (
-        std::vector<std::vector<std::vector<double>>> matrices,
-        bool packing = true,
-        int numRowsPrevMatrix = 1
+        uint32_t batchSize
 );
 
 

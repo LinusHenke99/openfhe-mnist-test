@@ -45,3 +45,18 @@ std::vector<std::vector<double>> resizeMatrix(std::vector<std::vector<double>> m
 
     return matrix;
 }
+
+unsigned int find_n1(uint32_t batchSize) {
+    unsigned int n1;
+
+    if ((int) log2(batchSize) % 2 == 0)
+        n1 = sqrt(batchSize);
+
+    else
+        n1 = sqrt(1 << ((int) log2(batchSize) - 1));
+
+    if (n1 < batchSize / n1)
+        n1 = batchSize / n1;
+
+    return n1;
+}

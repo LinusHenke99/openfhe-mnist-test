@@ -18,4 +18,7 @@ std::vector<double> flattenMatrix(std::vector<std::vector<double>> matrix, bool 
 std::vector<std::vector<double>> resizeMatrix(std::vector<std::vector<double>> matrix, size_t numCols, size_t numRows);
 
 
+unsigned int find_n1(uint32_t batchSize);
+
+
 #endif //TEST_MNIST_MATRIXFORMATTING_H
