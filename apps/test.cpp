@@ -98,7 +98,7 @@ int main(int argc, char** argv) {
     Ciphertext<DCRTPoly> cipherResult = matrix_multiplication_diagonals(matrix, ct);
     Plaintext result;
     context->Decrypt(cipherResult, keys.secretKey, &result);
-    result->SetLength(batchSize);
+    result->SetLength(matrix.size());
     std::cout << result;
 
     return 0;

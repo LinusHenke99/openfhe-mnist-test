@@ -60,11 +60,11 @@ Ciphertext<DCRTPoly> matrix_multiplication_diagonals (std::vector<std::vector<do
     Ciphertext<DCRTPoly> result = subResult;
 
     for (unsigned int k=1; k<n2; k++) {
-        pl = context->MakeCKKSPackedPlaintext(rotate_plain(diagonals[k*n1], k*n1));
+        pl = context->MakeCKKSPackedPlaintext(rotate_plain(diagonals[k*n1], -k*n1));
         subResult = context->EvalMult(pl, vector);
 
         for (unsigned int j=1; j<n1; j++) {
-            pl = context->MakeCKKSPackedPlaintext(rotate_plain(diagonals[k*n1 + j], k*n1));
+            pl = context->MakeCKKSPackedPlaintext(rotate_plain(diagonals[k*n1 + j], -k*n1));
             subResult += context->EvalMult(pl, context->EvalRotate(vector, j));
         }
 
