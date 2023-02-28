@@ -1,11 +1,12 @@
 #include <iostream>
 
 #include "Deserialize.h"
-#include "LoadImage.h"
 #include "openfhe.h"
 #include "LinTools.h"
 
 using namespace lbcrypto;
+
+double relu (double x);
 
 int main(int argc, char** argv) {
     if (argc != 2) {
@@ -23,4 +24,9 @@ int main(int argc, char** argv) {
     DeserializeCiphertext(cipher, filename);
 
     return 0;
+}
+
+
+double relu (double x) {
+    return x < .0 ? .0 : x;
 }

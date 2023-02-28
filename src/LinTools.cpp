@@ -52,9 +52,12 @@ Ciphertext<DCRTPoly> matrix_multiplication_diagonals (std::vector<std::vector<do
     Plaintext pl = context->MakeCKKSPackedPlaintext(diagonals[0]);
     Ciphertext<DCRTPoly> subResult = context->EvalMult(pl, vector);
 
+    std::vector<Ciphertext<DCRTPoly>> rotCache;
     for (unsigned int j=1; j<n1; j++) {
         pl = context->MakeCKKSPackedPlaintext(diagonals[j]);
-        subResult += context->EvalMult(pl, context->EvalRotate(vector, j));
+        Ciphertext<DCRTPoly> rotation = context->EvalRotate(vector, j);
+        rotCache.push_back(rotation);
+        subResult += context->EvalMult(pl, rotation);
     }
 
     Ciphertext<DCRTPoly> result = subResult;
@@ -65,7 +68,7 @@ Ciphertext<DCRTPoly> matrix_multiplication_diagonals (std::vector<std::vector<do
 
         for (unsigned int j=1; j<n1; j++) {
             pl = context->MakeCKKSPackedPlaintext(rotate_plain(diagonals[k*n1 + j], -k*n1));
-            subResult += context->EvalMult(pl, context->EvalRotate(vector, j));
+            subResult += context->EvalMult(pl, rotCache[j-1]);
         }
 
         result += context->EvalRotate(subResult, k*n1);

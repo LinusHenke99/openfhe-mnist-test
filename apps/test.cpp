@@ -1,10 +1,11 @@
 #include <iostream>
 #include <iomanip>
+#include <chrono>
+typedef std::chrono::high_resolution_clock Clock;
 
 #include "openfhe.h"
 #include "LinTools.h"
 #include "random_double.h"
-#include "MatrixFormatting.h"
 #include "KeyGen.h"
 
 using namespace lbcrypto;
@@ -32,7 +33,9 @@ int main(int argc, char** argv) {
     context->Enable(ADVANCEDSHE);
 
     KeyPair<DCRTPoly> keys = context->KeyGen();
+    std::cout << "Keypair generated." << std::endl;
 
+    std::cout << "Generating evaluation keys...";
     context->EvalMultKeyGen(keys.secretKey);
 
     std::vector<std::vector<double>> matrix;
@@ -48,7 +51,7 @@ int main(int argc, char** argv) {
 
     context->EvalRotateKeyGen(keys.secretKey, rotations);
 
-    std::cout << "Keygen done!\n\n";
+    std::cout << "Done!\n\n";
 
     std::vector<double> plainText;
     for (uint32_t i=0; i<numCols; i++)
@@ -93,13 +96,19 @@ int main(int argc, char** argv) {
     }
     std::cout << "]" << std::endl << std::endl;
 
-    std::cout << "n1 = " << find_n1(4) << std::endl;
-
+    std::cout << "Carrying out matrix multiplication...";
+    auto start = Clock::now();
     Ciphertext<DCRTPoly> cipherResult = matrix_multiplication_diagonals(matrix, ct);
+    auto end = Clock::now();
+    double execTime = (double) std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() * 1E-9;
+    std:: cout << "Done!\n\n";
+
+    std::cout << "Result on encrypted data: ";
     Plaintext result;
     context->Decrypt(cipherResult, keys.secretKey, &result);
     result->SetLength(matrix.size());
     std::cout << result;
+    std::cout << "Took " << execTime << "s" << std::endl;
 
     return 0;
 }
