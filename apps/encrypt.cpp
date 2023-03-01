@@ -11,6 +11,12 @@ using namespace lbcrypto;
 
 const std::string FOLDER = "../ciphertexts/";
 
+
+void myReplace(std::string& str,
+               const std::string& oldStr,
+               const std::string& newStr);
+
+
 int main(int argc, char** argv) {
     if(argc != 2) {
         std::cout << "Give filename as argument." << std::endl;
@@ -47,11 +53,28 @@ int main(int argc, char** argv) {
     Ciphertext<DCRTPoly> IMG_cipher = context->Encrypt(keys.publicKey, IMG);
     std::cout << "Ciphertext encrypted." << std::endl;
 
-    if(!Serial::SerializeToFile(FOLDER + fileName[fileName.size() - 5] + ".txt", IMG_cipher, SerType::BINARY)) {
+    myReplace(fileName, ".csv", ".txt");
+    myReplace(fileName, "../img/", "");
+
+    std::cout << fileName << std::endl;
+
+    if(!Serial::SerializeToFile(FOLDER + fileName, IMG_cipher, SerType::BINARY)) {
         std::cerr << "Error Serializing ciphertext." << std::endl;
         exit(1);
     }
     std::cout << "Ciphertext serialized." << std::endl;
 
     return 0;
+}
+
+
+void myReplace(std::string& str,
+               const std::string& oldStr,
+               const std::string& newStr)
+{
+    std::string::size_type pos = 0u;
+    while((pos = str.find(oldStr, pos)) != std::string::npos){
+        str.replace(pos, oldStr.length(), newStr);
+        pos += newStr.length();
+    }
 }

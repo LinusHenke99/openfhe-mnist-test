@@ -28,6 +28,7 @@ def main():
     img = np.array(img).transpose()
 
     img.tofile(filename.replace(".npy", ".csv"), sep=";", format="%10.5f")
+    np.save(filename, img)
 
 
 if __name__ == "__main__":

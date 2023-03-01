@@ -23,8 +23,8 @@ int main(int argc, char** argv) {
 
     CCParams<CryptoContextCKKSRNS> parameters;
     parameters.SetBatchSize(batchSize);
-    parameters.SetMultiplicativeDepth(3);
-    parameters.SetScalingModSize(50);
+    parameters.SetMultiplicativeDepth(1);
+    parameters.SetScalingModSize(40);
 
     auto context = GenCryptoContext(parameters);
     context->Enable(KEYSWITCH);

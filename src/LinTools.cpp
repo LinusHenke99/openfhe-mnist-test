@@ -52,10 +52,13 @@ Ciphertext<DCRTPoly> matrix_multiplication_diagonals (std::vector<std::vector<do
     Plaintext pl = context->MakeCKKSPackedPlaintext(diagonals[0]);
     Ciphertext<DCRTPoly> subResult = context->EvalMult(pl, vector);
 
+    auto cipherPrecompute = context->EvalFastRotationPrecompute(vector);
+    uint32_t M = 2 * context->GetRingDimension();
+
     std::vector<Ciphertext<DCRTPoly>> rotCache;
     for (unsigned int j=1; j<n1; j++) {
         pl = context->MakeCKKSPackedPlaintext(diagonals[j]);
-        Ciphertext<DCRTPoly> rotation = context->EvalRotate(vector, j);
+        Ciphertext<DCRTPoly> rotation = context->EvalFastRotation(vector, j, M, cipherPrecompute);
         rotCache.push_back(rotation);
         subResult += context->EvalMult(pl, rotation);
     }
@@ -75,4 +78,30 @@ Ciphertext<DCRTPoly> matrix_multiplication_diagonals (std::vector<std::vector<do
     }
 
     return result;
+}
+
+
+std::vector<double> plain_matrix_multiplication(std::vector<std::vector<double>> matrix, std::vector<double> vector) {
+    std::vector<double> result;
+
+    for (int i=0; i<(int) matrix.size(); i++) {
+        double entry = 0;
+
+        for (int j=0; j<(int) matrix[0].size(); j++) {
+            entry += matrix[i][j] * vector[j];
+        }
+
+        result.push_back(entry);
+    }
+
+    return result;
+}
+
+
+std::vector<double> plain_addition(std::vector<double> a, std::vector<double> b) {
+    for (int j=0; j<(int) a.size(); j++) {
+        a[j] += b[j];
+    }
+
+    return a;
 }

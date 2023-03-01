@@ -26,7 +26,6 @@ int main (int argc, char** argv) {
     uint32_t multDepth = std::stoi(argv[1]);
     uint32_t scalSize = std::stoi(argv[2]);
     uint32_t batchSize = 1024;
-    std::cout << batchSize << std::endl;
 
     CCParams<CryptoContextCKKSRNS> parameters;
     parameters.SetMultiplicativeDepth(multDepth);
