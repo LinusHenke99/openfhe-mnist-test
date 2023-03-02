@@ -1,7 +1,3 @@
-//
-// Created by lchenke on 24.01.23.
-//
-
 #include "random_double.h"
 
 
@@ -13,5 +9,4 @@ double random_double(double min, double max) {
     double res = min + delta * offset;
 
     return res;
-
 }

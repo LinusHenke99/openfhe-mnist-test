@@ -7,7 +7,7 @@
 
 #include <cstdlib>
 
-//  Generator for random number generator
+//  Generator for random double
 double random_double(double min, double max);
 
 #endif //OPENFHE_BENCHMARK_RANDOM_DOUBLE_H

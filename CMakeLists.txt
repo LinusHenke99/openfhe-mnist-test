@@ -5,7 +5,8 @@ project(test-mnist)
 set(CMAKE_CXX_STANDARD 17)
 option( BUILD_STATIC "Set to ON to include static versions of the library" OFF)
 
-find_package(OpenFHE)
+find_package(OpenFHE REQUIRED)
+find_package(nlohmann_json 3.2.0 REQUIRED)
 
 set( CMAKE_CXX_FLAGS ${OpenFHE_CXX_FLAGS} )
 
@@ -25,6 +26,8 @@ add_executable(encrypt
         apps/encrypt.cpp)
 add_executable(test_matMul
         apps/test.cpp)
+add_executable(eval_mnist
+        apps/eval_mnist.cpp)
 
 
 target_link_libraries(test_mnist
@@ -35,6 +38,8 @@ target_link_libraries(encrypt
         Components)
 target_link_libraries(test_matMul
         Components)
+target_link_libraries(eval_mnist
+        Components)
 
 
 install(TARGETS test_mnist
@@ -44,4 +49,6 @@ install(TARGETS keygen
 install(TARGETS encrypt
         RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)
 install(TARGETS test_matMul
+        RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)
+install(TARGETS eval_mnist
         RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)

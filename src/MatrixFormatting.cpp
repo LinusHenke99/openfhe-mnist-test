@@ -60,3 +60,21 @@ unsigned int find_n1(uint32_t batchSize) {
 
     return n1;
 }
+
+
+std::vector<std::vector<double>> diagonal_transformation(const std::vector<std::vector<double>>& matrix) {
+    std::vector<std::vector<double>> result;
+
+    for (unsigned int i=0; i< matrix.size(); i++) {
+        std::vector<double> row;
+        for (unsigned int j = 0; j < matrix[0].size(); j++) {
+            unsigned int colIndex = (j + i) % matrix[0].size();
+            unsigned int rowIndex = j % matrix.size();
+
+            row.push_back(matrix[rowIndex][colIndex]);
+        }
+        result.push_back(row);
+    }
+
+    return result;
+}

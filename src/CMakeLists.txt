@@ -10,8 +10,10 @@ target_include_directories(Components
         ${OpenFHE_INCLUDE}/third-party/include
         ${OpenFHE_INCLUDE}/core
         ${OpenFHE_INCLUDE}/pke
+        ${HDF5_INCLUDE_DIR}
         )
 
-target_link_libraries(Components
+target_link_libraries(Components PRIVATE
         ${OpenFHE_SHARED_LIBRARIES}
+        nlohmann_json::nlohmann_json
         )

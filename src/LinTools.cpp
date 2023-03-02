@@ -1,25 +1,7 @@
 #include "LinTools.h"
 
 
-std::vector<std::vector<double>> diagonal_transformation(std::vector<std::vector<double>> matrix) {
-    std::vector<std::vector<double>> result;
-
-    for (unsigned int i=0; i< matrix.size(); i++) {
-        std::vector<double> row;
-        for (unsigned int j = 0; j < matrix[0].size(); j++) {
-            unsigned int colIndex = (j + i) % matrix[0].size();
-            unsigned int rowIndex = j % matrix.size();
-
-            row.push_back(matrix[rowIndex][colIndex]);
-        }
-        result.push_back(row);
-    }
-
-    return result;
-}
-
-
-std::vector<double> rotate_plain(std::vector<double> vector, int index) {
+std::vector<double> rotate_plain(const std::vector<double>& vector, int index) {
     std::vector<double> result(vector.size());
 
 
@@ -39,7 +21,7 @@ std::vector<double> rotate_plain(std::vector<double> vector, int index) {
 }
 
 
-Ciphertext<DCRTPoly> matrix_multiplication_diagonals (std::vector<std::vector<double>> matrix, Ciphertext<DCRTPoly> vector) {
+Ciphertext<DCRTPoly> matrix_multiplication_diagonals (std::vector<std::vector<double>> matrix, const Ciphertext<DCRTPoly>& vector) {
     auto context = vector->GetCryptoContext();
     uint32_t batchSize = vector->GetEncodingParameters()->GetBatchSize();
 
@@ -81,7 +63,7 @@ Ciphertext<DCRTPoly> matrix_multiplication_diagonals (std::vector<std::vector<do
 }
 
 
-std::vector<double> plain_matrix_multiplication(std::vector<std::vector<double>> matrix, std::vector<double> vector) {
+std::vector<double> plain_matrix_multiplication(const std::vector<std::vector<double>>& matrix, const std::vector<double>& vector) {
     std::vector<double> result;
 
     for (int i=0; i<(int) matrix.size(); i++) {
@@ -98,7 +80,7 @@ std::vector<double> plain_matrix_multiplication(std::vector<std::vector<double>>
 }
 
 
-std::vector<double> plain_addition(std::vector<double> a, std::vector<double> b) {
+std::vector<double> plain_addition(std::vector<double> a, const std::vector<double>& b) {
     for (int j=0; j<(int) a.size(); j++) {
         a[j] += b[j];
     }

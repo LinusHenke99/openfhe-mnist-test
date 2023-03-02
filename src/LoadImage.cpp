@@ -4,6 +4,11 @@
 std::vector<double> load_image(std::string pathToFile) {
     std::fstream fin(pathToFile);
 
+    if (!fin.is_open()) {
+        std::cout << "Could not open image file." << std::endl;
+        std::exit(-1);
+    }
+
     std::vector<double> img;
     std::string line, temp, entry;
 
