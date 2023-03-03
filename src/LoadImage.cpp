@@ -24,5 +24,9 @@ std::vector<double> load_image(std::string pathToFile) {
     }
 
     fin.close();
+
+    if (img.size() == 1023)
+        img.push_back(.0);
+
     return img;
 }

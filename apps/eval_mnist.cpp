@@ -19,7 +19,7 @@ using namespace lbcrypto;
 Ciphertext<DCRTPoly> evalRelu (Ciphertext<DCRTPoly> cipher, double xMin, double xMax);
 
 
-//  String search and replace funtion
+//  String search and replace function
 void myReplace(std::string& str,
                const std::string& oldStr,
                const std::string& newStr);
@@ -39,11 +39,21 @@ int main(int argc, char** argv) {
     }
 
     std::string outputFile = argv[2];
+    std::string inputFile = argv[1];
+
+    std::vector<std::string> files;
+
+    std::fstream inFile(inputFile);
+
+    std::string line;
+    while (std::getline(inFile, line)) {
+        files.push_back(line);
+    }
+
+    inFile.close();
 
     const std::string INPUT_DIR = "../ciphertexts/";
     const std::string IMG_DIR = "../img/";
-
-    std::vector<std::string> files = {"4-1.txt"};
 
     CryptoContext<DCRTPoly> context;
     KeyPair<DCRTPoly> keys;
@@ -137,7 +147,7 @@ int main(int argc, char** argv) {
         auto it = std::minmax_element(resultVec.begin(), resultVec.end());
         int res = std::distance(resultVec.begin(), it.second);
 
-        correct.push_back(res == file[0] ? 1 : 0);
+        correct.push_back(std::to_string(res)[0] == file[0] ? 1 : 0);
 
         cipherRes.push_back(resultVec);
 
@@ -180,7 +190,7 @@ int main(int argc, char** argv) {
     j["plainRes"] = plainRes;
     j["cipherRes"] = cipherRes;
 
-    std::fstream outFile(outputFile);
+    std::ofstream outFile(outputFile);
 
     if(!outFile.is_open()) {
         std::cout << "Could not open output file!" << std::endl;

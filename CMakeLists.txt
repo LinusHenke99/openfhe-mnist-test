@@ -28,6 +28,8 @@ add_executable(test_matMul
         apps/test.cpp)
 add_executable(eval_mnist
         apps/eval_mnist.cpp)
+add_executable(fix_output
+        apps/fix_output.cpp)
 
 
 target_link_libraries(test_mnist
@@ -39,6 +41,8 @@ target_link_libraries(encrypt
 target_link_libraries(test_matMul
         Components)
 target_link_libraries(eval_mnist
+        Components)
+target_link_libraries(fix_output
         Components)
 
 
