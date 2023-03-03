@@ -20,7 +20,7 @@
 using namespace lbcrypto;
 
 
-/*
+/**
  * Function that carries out a matrix multiplication between a plain matrix and an encrypted CKKS vector using the
  * babystep-giantstep diagonal method. The matrix will be resized to be a quadratic matrix according to the contexts
  * batchsize.
@@ -30,7 +30,7 @@ using namespace lbcrypto;
 Ciphertext<DCRTPoly> matrix_multiplication_diagonals(std::vector<std::vector<double>> matrix, const Ciphertext<DCRTPoly>& vector);
 
 
-/*
+/**
  * Function that carries out a plaintext vector-matrix multiplication. Mostly used for accuracy studies of the
  * ciphertext operations.
  *
@@ -40,7 +40,7 @@ Ciphertext<DCRTPoly> matrix_multiplication_diagonals(std::vector<std::vector<dou
 std::vector<double> plain_matrix_multiplication(const std::vector<std::vector<double>>& matrix, const std::vector<double>& vector);
 
 
-/*
+/**
  * Function that carries out addition between to plain vectors. Mostly used for accuracy studies of the ciphertext
  * operations
  *

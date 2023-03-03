@@ -17,7 +17,7 @@
 #include <cstdint>
 
 
-/*
+/**
  * Function that transposes a given plaintext matrix
  *
  * @param matrix Input matrix that should be transposed.
@@ -25,7 +25,7 @@
 std::vector<std::vector<double>> transpose(std::vector<std::vector<double>> matrix);
 
 
-/*
+/**
  * Function that finds the next larger power of two according to a number n. This is needed, because an OpenFHE
  * Cryptocontext can only encode batchsizes that are a power of two.
  *
@@ -34,7 +34,7 @@ std::vector<std::vector<double>> transpose(std::vector<std::vector<double>> matr
 unsigned int next_power2 (unsigned int n);
 
 
-/*
+/**
  * Function that resizes a matrix so that it is of shape numCols x numRows. The resizing will be done by padding zeros.
  *
  * @param matrix The input matrix which should be resized.
@@ -44,7 +44,7 @@ unsigned int next_power2 (unsigned int n);
 std::vector<std::vector<double>> resizeMatrix(std::vector<std::vector<double>> matrix, size_t numCols, size_t numRows);
 
 
-/*
+/**
  * Function that finds an unsigned integer factor n1 for an unsigned integer n=n1 * n2, so that n1 + n2 is minimized.
  * The return value is the factor n1 according to the convention that n1 >= n2
  *
@@ -53,7 +53,7 @@ std::vector<std::vector<double>> resizeMatrix(std::vector<std::vector<double>> m
 unsigned int find_n1(uint32_t batchSize);
 
 
-/*
+/**
  * Function that returns a C++ vector of the diagonals of a plaintext matrix.
  *
  * @param matrix Input matrix, from which the diagonals should be extracted

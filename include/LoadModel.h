@@ -1,6 +1,12 @@
-//
-// Created by lchenke on 01.03.23.
-//
+/**
+ * @file LoadModel.h
+ *
+ * @brief Includes functions used to get model parameters from 
+ *
+ * @author Linus Henke
+ * Contact: linus.henke@mci.edu
+ *
+ */
 
 #ifndef TEST_MNIST_LOADMODEL_H
 #define TEST_MNIST_LOADMODEL_H
@@ -11,9 +17,19 @@
 #include <string>
 
 
+/**
+ * Function that loads a model matrix out of a csv file. Used for weights.
+ * 
+ * @param filename Path to model file
+ */
 std::vector<std::vector<double>> loadMatrix (std::string filename);
 
 
+/**
+ * Function that loads a model vector. Used for biases.
+ * 
+ * @param filename Path to model file
+ */
 std::vector<double> loadBias (std::string filename);
 
 

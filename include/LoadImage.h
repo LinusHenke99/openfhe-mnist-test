@@ -1,3 +1,13 @@
+/**
+ * @file LoadImage.h
+ *
+ * @brief Includes a function to read mnist images from a .csv file
+ *
+ * @author Linus Henke
+ * Contact: linus.henke@mci.edu
+ *
+ */
+
 #ifndef TEST_MNIST_LOADIMAGE_H
 #define TEST_MNIST_LOADIMAGE_H
 
@@ -10,8 +20,10 @@
 #include <sstream>
 
 
-/*
- *          Function to read image binaries
+/**
+ * Function that returns a vector of an mnist image read from a .csv file
+ *
+ * @param pathToFile path to csv file containing the mnist image
  */
 std::vector<double> load_image(std::string pathToFile);
 
