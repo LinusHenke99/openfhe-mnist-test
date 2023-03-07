@@ -31,5 +31,15 @@ Do a test run for the neural network. The file containing the ciphertext on whic
 given as an argument.
 
 ### Eval Mnist
+This is a C++ mainfile, which carries out inference on multiple ciphertexts in order to log execution time and 
+precision of the scheme. The arguments of the program are
+```
+<input file> <output json file>
+```
+The input file should be containing the filenames of the ciphertext files which should be used for evalutaion.
 
 ### Test Matmul
+This is a program dedicated to testing the matrix multiplication implemented in OpenFHE with
+$$
+A.v = \sum_{k=0}^{n_2-1} \mathrm{Rot} \left( \sum_{j=0}^{n_1-1} \mathrm{Rot}\left(diag(A, kn_1 + j), -kn_1\right) \cdot \mathrm{Rot} (v,j), kn_1 \right)
+$$
