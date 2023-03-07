@@ -18,19 +18,40 @@ const std::string FOLDER = "../keys/";
 
 int main (int argc, char** argv) {
 
-    if (argc != 3) {
-        std::cout << "args: <mult depth> <mod size>" << std::endl;
+    if (argc != 5) {
+        std::cout << "args: <mult depth> <mod size> <first mod size> <security level>" << std::endl;
         return 0;
     }
 
     uint32_t multDepth = std::stoi(argv[1]);
     uint32_t scalSize = std::stoi(argv[2]);
+    uint32_t firstModSize = std::stoi(argv[3]);
+    uint32_t securityLevel = std::stoi(argv[4]);
     uint32_t batchSize = 1024;
 
     CCParams<CryptoContextCKKSRNS> parameters;
     parameters.SetMultiplicativeDepth(multDepth);
     parameters.SetScalingModSize(scalSize);
-    parameters.SetSecurityLevel(HEStd_128_classic);
+    parameters.SetFirstModSize(firstModSize);
+    parameters.SetRingDim(8192);
+
+    switch (securityLevel) {
+        case 128:
+            parameters.SetSecurityLevel(HEStd_128_classic);
+            break;
+
+        case 256:
+            parameters.SetSecurityLevel(HEStd_256_classic);
+            break;
+
+        case 192:
+            parameters.SetSecurityLevel(HEStd_192_classic);
+            break;
+
+        default:
+            parameters.SetSecurityLevel(HEStd_NotSet);
+    }
+
     parameters.SetBatchSize(batchSize);
 
     CryptoContext<DCRTPoly> context = GenCryptoContext(parameters);

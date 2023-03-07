@@ -12,8 +12,7 @@ std::vector<double> load_image(std::string pathToFile) {
     std::vector<double> img;
     std::string line, temp, entry;
 
-    while (fin >> temp) {
-        getline(fin, line);
+    while (getline(fin, line)) {
 
         std::stringstream s(line);
 

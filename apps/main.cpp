@@ -83,6 +83,11 @@ int main(int argc, char** argv) {
     startOper = Clock::now();
     cipher = evalRelu(cipher, xMin, xMax);
     endOper = Clock::now();
+
+    // startOper = Clock::now();
+    // std::vector<double> coefs = load_image("../model/relu1.csv");
+    // cipher = context->EvalPoly(cipher, coefs);
+    // endOper = Clock::now();
     std::cout << "Done! Execution time: " << time_in_seconds(startOper, endOper) << std::endl;
 
 
@@ -103,6 +108,11 @@ int main(int argc, char** argv) {
     startOper = Clock::now();
     cipher = evalRelu(cipher, xMin, xMax);
     endOper = Clock::now();
+
+    // startOper = Clock::now();
+    // coefs = load_image("../model/relu2.csv");
+    // cipher = context->EvalPoly(cipher, coefs);
+    // endOper = Clock::now();
     std::cout << "Done! Execution time: " << time_in_seconds(startOper, endOper) << std::endl;
 
 
@@ -130,7 +140,9 @@ int main(int argc, char** argv) {
 
     double desTime = time_in_seconds(desStart, desEnd);
     std::cout << "Took " << execTime << " seconds, where " << desTime << "s were spent deserializing, and "
-            << execTime - desTime << "s were spent doint ML operations." << std::endl;
+            << execTime - desTime << "s were spent doing ML operations." << std::endl;
+
+    std::cout << "The output of the neurons was: " << result << std::endl;
 
     return 0;
 }
@@ -141,6 +153,7 @@ Ciphertext<DCRTPoly> evalRelu (Ciphertext<DCRTPoly> cipher, double xMin, double 
 
     return context->EvalChebyshevFunction([](double x) -> double {return x < .0 ? 0 : x;}, cipher, xMin, xMax, 3);
 }
+
 
 double time_in_seconds (std::chrono::time_point<std::chrono::system_clock> start,
                             std::chrono::time_point<std::chrono::system_clock> end) {
