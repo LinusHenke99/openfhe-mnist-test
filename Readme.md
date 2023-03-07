@@ -39,7 +39,5 @@ precision of the scheme. The arguments of the program are
 The input file should be containing the filenames of the ciphertext files which should be used for evalutaion.
 
 ### Test Matmul
-This is a program dedicated to testing the matrix multiplication implemented in OpenFHE with
-$$
-A.v = \sum_{k=0}^{n_2-1} \mathrm{Rot} \left( \sum_{j=0}^{n_1-1} \mathrm{Rot}\left(diag(A, kn_1 + j), -kn_1\right) \cdot \mathrm{Rot} (v,j), kn_1 \right)
-$$
+This is a program dedicated to testing the matrix multiplication implemented in OpenFHE with \
+$A.v = \sum_{k=0}^{n_2-1} \mathrm{Rot} \left( \sum_{j=0}^{n_1-1} \mathrm{Rot}\left(diag(A, kn_1 + j), -kn_1\right) \cdot \mathrm{Rot} (v,j), kn_1 \right)$
