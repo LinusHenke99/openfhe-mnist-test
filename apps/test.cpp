@@ -98,7 +98,7 @@ int main(int argc, char** argv) {
 
     std::cout << "Carrying out matrix multiplication...";
     auto start = Clock::now();
-    Ciphertext<DCRTPoly> cipherResult = matrix_multiplication_diagonals(matrix, ct);
+    Ciphertext<DCRTPoly> cipherResult = matrix_multiplication_parallel(matrix, ct, context);
     auto end = Clock::now();
     double execTime = (double) std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() * 1E-9;
     std:: cout << "Done!\n\n";

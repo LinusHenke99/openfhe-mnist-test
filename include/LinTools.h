@@ -13,6 +13,7 @@
 #define TEST_MNIST_LINTOOLS_H
 
 #include <vector>
+#include <future>
 
 #include "MatrixFormatting.h"
 #include "openfhe.h"
@@ -21,13 +22,50 @@ using namespace lbcrypto;
 
 
 /**
+ * Function that does plaintext matrix with ciphertext vector multiplication with the option to turn off parallel
+ * computing. Default is with parallel computing
+ *
+ * @param matrix Plaintext matrix, which should be multiplied with the vector
+ * @param vector Ciphertext vector which should be multiplied
+ * @param context Cryptocontext belonging to the ciphertext
+ * @param parallel Boolean that toggles parallel computing
+ */
+Ciphertext<DCRTPoly> matrix_multiplication(
+        std::vector<std::vector<double>> matrix,
+        const Ciphertext<DCRTPoly>& vector,
+        CryptoContext<DCRTPoly> context,
+        bool parallel = true
+        );
+
+
+/**
  * Function that carries out a matrix multiplication between a plain matrix and an encrypted CKKS vector using the
  * babystep-giantstep diagonal method. The matrix will be resized to be a quadratic matrix according to the contexts
  * batchsize.
  *
  * @param matrix Plaintext matrix, which should be multiplied with the vector
+ * @param vector Ciphertext vector which should be multiplied
+ * @param context Cryptocontext belonging to the ciphertext
  */
-Ciphertext<DCRTPoly> matrix_multiplication_diagonals(std::vector<std::vector<double>> matrix, const Ciphertext<DCRTPoly>& vector);
+Ciphertext<DCRTPoly> matrix_multiplication_diagonals(
+        std::vector<std::vector<double>> matrix,
+        const Ciphertext<DCRTPoly>& vector,
+        CryptoContext<DCRTPoly> context
+        );
+
+
+/**
+ * Function that works with the same principle as matrix_multiplication_diagonals but implements parallel computing
+ *
+ * @param matrix Plaintext matrix, which should be multiplied with the vector
+ * @param vector Ciphertext vector which should be multiplied
+ * @param context Cryptocontext belonging to the ciphertext
+ */
+Ciphertext<DCRTPoly> matrix_multiplication_parallel(
+        std::vector<std::vector<double>> matrix,
+        const Ciphertext<DCRTPoly>& vector,
+        CryptoContext<DCRTPoly> context
+        );
 
 
 /**
@@ -37,7 +75,10 @@ Ciphertext<DCRTPoly> matrix_multiplication_diagonals(std::vector<std::vector<dou
  * @param matrix Plaintext matrix which should be multiplied with the plain vector
  * @param vector Plaintext vector which should be multiplied with the plain matrix
  */
-std::vector<double> plain_matrix_multiplication(const std::vector<std::vector<double>>& matrix, const std::vector<double>& vector);
+std::vector<double> plain_matrix_multiplication(
+        const std::vector<std::vector<double>>& matrix,
+        const std::vector<double>& vector
+        );
 
 
 /**

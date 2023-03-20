@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
     //  Applying convolutional layer
     std::cout << "conv...";
     auto startOper = Clock::now();
-    cipher = matrix_multiplication_diagonals(convWeights, cipher);
+    cipher = matrix_multiplication(convWeights, cipher, context);
     cipher = context->EvalAdd(cipher, convBiases);
     auto endOper = Clock::now();
     std::cout << "Done! Execution time: " << time_in_seconds(startOper, endOper) << std::endl;
@@ -84,17 +84,13 @@ int main(int argc, char** argv) {
     cipher = evalRelu(cipher, xMin, xMax);
     endOper = Clock::now();
 
-    // startOper = Clock::now();
-    // std::vector<double> coefs = load_image("../model/relu1.csv");
-    // cipher = context->EvalPoly(cipher, coefs);
-    // endOper = Clock::now();
     std::cout << "Done! Execution time: " << time_in_seconds(startOper, endOper) << std::endl;
 
 
     // Applying first fully connected layer
     std::cout << "gemm3...";
     startOper = Clock::now();
-    cipher = matrix_multiplication_diagonals(gemm1Weights, cipher);
+    cipher = matrix_multiplication(gemm1Weights, cipher, context);
     cipher = context->EvalAdd(cipher, gemm1Biases);
     endOper = Clock::now();
     std::cout << "Done! Execution time: " << time_in_seconds(startOper, endOper) << std::endl;
@@ -109,17 +105,13 @@ int main(int argc, char** argv) {
     cipher = evalRelu(cipher, xMin, xMax);
     endOper = Clock::now();
 
-    // startOper = Clock::now();
-    // coefs = load_image("../model/relu2.csv");
-    // cipher = context->EvalPoly(cipher, coefs);
-    // endOper = Clock::now();
     std::cout << "Done! Execution time: " << time_in_seconds(startOper, endOper) << std::endl;
 
 
     // Applying second fully connected layer
     std::cout << "gemm5...";
     startOper = Clock::now();
-    cipher = matrix_multiplication_diagonals(gemm2Weights, cipher);
+    cipher = matrix_multiplication(gemm2Weights, cipher, context);
     cipher = context->EvalAdd(cipher, gemm2Biases);
     endOper = Clock::now();
     std::cout << "Done! Execution time: " << time_in_seconds(startOper, endOper) << std::endl;
