@@ -35,20 +35,24 @@ Ciphertext<DCRTPoly> matrix_multiplication(
 Ciphertext<DCRTPoly> matrix_multiplication_diagonals (std::vector<std::vector<double>> matrix, const Ciphertext<DCRTPoly>& vector, CryptoContext<DCRTPoly> context) {
     uint32_t batchSize = vector->GetEncodingParameters()->GetBatchSize();
 
-    //  Resizing matrix to the contexts batchsize and getting a matrix in diagonal order
+    //  Resizing matrix to the contexts batchSize and getting a matrix in diagonal order
     matrix = resizeMatrix(matrix, batchSize, batchSize);
     auto diagonals = diagonal_transformation(matrix);
 
-    //  Finding the optimal configuration for
+    //  Finding the optimal configuration for n1 and n2 where batchSize = n1 * n2
     unsigned int n1 = find_n1(batchSize);
     unsigned int n2 = batchSize / n1;
 
+    //  Calculating first term in the sum in order to avoid passing the private key to encrypt 0 and than later adding
+    //  to that via a for loop. Because of that for loops later will start at 1
     Plaintext pl = context->MakeCKKSPackedPlaintext(diagonals[0]);
     Ciphertext<DCRTPoly> subResult = context->EvalMult(pl, vector);
 
+    //  Doing rotations precompute in order to optimize rotations of the ciphertext
     auto cipherPrecompute = context->EvalFastRotationPrecompute(vector);
     uint32_t M = 2 * context->GetRingDimension();
 
+    //  Calculating first sub-sum and caching all rotations of the vector variable needed later
     std::vector<Ciphertext<DCRTPoly>> rotCache;
     for (unsigned int j=1; j<n1; j++) {
         pl = context->MakeCKKSPackedPlaintext(diagonals[j]);
@@ -59,6 +63,7 @@ Ciphertext<DCRTPoly> matrix_multiplication_diagonals (std::vector<std::vector<do
 
     Ciphertext<DCRTPoly> result = subResult;
 
+    //  Calculating the remaining terms in the sums
     for (unsigned int k=1; k<n2; k++) {
         pl = context->MakeCKKSPackedPlaintext(rotate_plain(diagonals[k*n1], -k*n1));
         subResult = context->EvalMult(pl, vector);
@@ -78,6 +83,7 @@ Ciphertext<DCRTPoly> matrix_multiplication_diagonals (std::vector<std::vector<do
 Ciphertext<DCRTPoly> matrix_multiplication_parallel(std::vector<std::vector<double>> matrix, const Ciphertext<DCRTPoly>& vector, CryptoContext<DCRTPoly> context) {
     uint32_t batchSize = vector->GetEncodingParameters()->GetBatchSize();
 
+    //  This will use the same procedure as above but it will include parallel computing
     matrix = resizeMatrix(matrix, batchSize, batchSize);
     auto diagonals = diagonal_transformation(matrix);
 
@@ -91,9 +97,14 @@ Ciphertext<DCRTPoly> matrix_multiplication_parallel(std::vector<std::vector<doub
     uint32_t M = 2 * context->GetRingDimension();
 
     std::vector<Ciphertext<DCRTPoly>> rotCache;
+
+    //  A vector which stores the job of each thread in the for of a future object. Each future object will return a two
+    //  dimensional C++ array, which will have rotation that should be cached for the term submitted to the job, and the
+    //  second element will be the term in the sum which should be added to subResult later
     std::vector<std::future<std::array<Ciphertext<DCRTPoly>, 2>>> futures1;
 
     for (unsigned int j=1; j<n1; j++) {
+        //  Pushing the job to the futures1 vector
         futures1.push_back(std::async(
                 std::launch::async,
                 [&context, &diagonals, &cipherPrecompute, &vector, j, M] () -> std::array<Ciphertext<DCRTPoly>, 2> {
@@ -108,6 +119,8 @@ Ciphertext<DCRTPoly> matrix_multiplication_parallel(std::vector<std::vector<doub
         ));
     }
 
+    //  Looping over the elements of the futures vector in order to receive the results and cache the rotation and add
+    //  the single terms to the sum to the result
     for (unsigned int j=0; j<n1-1; j++) {
         std::array<Ciphertext<DCRTPoly>, 2> buffer = futures1[j].get();
 
@@ -119,6 +132,7 @@ Ciphertext<DCRTPoly> matrix_multiplication_parallel(std::vector<std::vector<doub
 
     Ciphertext<DCRTPoly> result = subResult;
 
+    //  Generating a different vector of futures, because the return values of the threads are of different type
     std::vector<std::future<Ciphertext<DCRTPoly>>> futures2;
 
     for (unsigned int k=1; k<n2; k++) {
