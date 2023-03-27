@@ -18,8 +18,8 @@ const std::string FOLDER = "../keys/";
 
 int main (int argc, char** argv) {
 
-    if (argc != 5) {
-        std::cout << "args: <mult depth> <mod size> <first mod size> <security level>" << std::endl;
+    if (argc != 6) {
+        std::cout << "args: <mult depth> <mod size> <first mod size> <security level> <ringdim>" << std::endl;
         return 0;
     }
 
@@ -33,7 +33,7 @@ int main (int argc, char** argv) {
     parameters.SetMultiplicativeDepth(multDepth);
     parameters.SetScalingModSize(scalSize);
     parameters.SetFirstModSize(firstModSize);
-    parameters.SetRingDim(8192);
+    parameters.SetRingDim(next_power2(std::stoi(argv[5])));
 
     switch (securityLevel) {
         case 128:
@@ -62,6 +62,8 @@ int main (int argc, char** argv) {
     context->Enable(ADVANCEDSHE);
 
     std::cout << "The Cryptocontext has been generated..." << std::endl;
+    std::cout << "q: " << context->GetModulus() << std::endl;
+    std::cout << "Ring dimension: " << context->GetRingDimension() << std::endl;
 
     KeyPair<DCRTPoly> keys = context->KeyGen();
     std::cout << "Keypair has been generated..." << std::endl;

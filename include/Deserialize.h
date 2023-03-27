@@ -31,6 +31,7 @@ using namespace lbcrypto;
  */
 void DeserializeContext(CryptoContext<DCRTPoly>& context, KeyPair<DCRTPoly>& keypair, bool evalKeys = true);
 
+
 /**
  * Function that deserializes a ciphertext to a ciphertext object.
  *

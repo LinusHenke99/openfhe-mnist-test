@@ -1,13 +1,16 @@
 #include <iostream>
 #include <chrono>
 #include <iomanip>
+#include <future>
 typedef std::chrono::high_resolution_clock Clock;
+
 
 #include "Deserialize.h"
 #include "openfhe.h"
 #include "LinTools.h"
 #include "LoadModel.h"
 #include "LoadImage.h"
+
 
 using namespace lbcrypto;
 
@@ -17,6 +20,7 @@ Ciphertext<DCRTPoly> evalRelu (Ciphertext<DCRTPoly> cipher, double xMin, double 
 
 double time_in_seconds (std::chrono::time_point<std::chrono::system_clock> start,
                             std::chrono::time_point<std::chrono::system_clock> end);
+
 
 int main(int argc, char** argv) {
     if (argc != 2) {
