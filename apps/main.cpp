@@ -88,6 +88,11 @@ int main(int argc, char** argv) {
     cipher = evalRelu(cipher, xMin, xMax);
     endOper = Clock::now();
 
+    // std::vector<double> coefs = {-0.00247449,  0.06739249,  0.55581658,  0.66073875};
+    // startOper = Clock::now();
+    // cipher = context->EvalPoly(cipher, coefs);
+    // endOper = Clock::now();
+
     std::cout << "Done! Execution time: " << time_in_seconds(startOper, endOper) << std::endl;
 
 
@@ -108,6 +113,11 @@ int main(int argc, char** argv) {
     startOper = Clock::now();
     cipher = evalRelu(cipher, xMin, xMax);
     endOper = Clock::now();
+
+    // coefs = {3.51498990e-04, 3.45126938e-02, 4.71621775e-01, 1.27791123e+00};
+    // startOper = Clock::now();
+    // cipher = context->EvalPoly(cipher, coefs);
+    // endOper = Clock::now();
 
     std::cout << "Done! Execution time: " << time_in_seconds(startOper, endOper) << std::endl;
 

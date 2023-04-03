@@ -21,23 +21,24 @@ std::vector<double> rotate_plain(const std::vector<double>& vector, int index) {
 
 
 Ciphertext<DCRTPoly> matrix_multiplication(
-        std::vector<std::vector<double>> matrix,
+        const std::vector<std::vector<double>>& matrix,
         const Ciphertext<DCRTPoly>& vector,
         CryptoContext<DCRTPoly> context,
         bool parallel
 ) {
     return parallel ?
            matrix_multiplication_parallel(matrix, vector, context):
-           matrix_multiplication_diagonals(matrix, vector, context);
+           matrix_multiplication_sequential(matrix, vector, context);
 }
 
 
-Ciphertext<DCRTPoly> matrix_multiplication_diagonals (std::vector<std::vector<double>> matrix, const Ciphertext<DCRTPoly>& vector, CryptoContext<DCRTPoly> context) {
+Ciphertext<DCRTPoly> matrix_multiplication_sequential (const std::vector<std::vector<double>>& matrix, const Ciphertext<DCRTPoly>& vector, CryptoContext<DCRTPoly> context) {
     uint32_t batchSize = vector->GetEncodingParameters()->GetBatchSize();
 
     //  Resizing matrix to the contexts batchSize and getting a matrix in diagonal order
-    matrix = resizeMatrix(matrix, batchSize, batchSize);
-    auto diagonals = diagonal_transformation(matrix);
+    auto diagonals = diagonal_transformation(
+            resizeMatrix(matrix, batchSize, batchSize)
+            );
 
     //  Finding the optimal configuration for n1 and n2 where batchSize = n1 * n2
     unsigned int n1 = find_n1(batchSize);
@@ -80,12 +81,13 @@ Ciphertext<DCRTPoly> matrix_multiplication_diagonals (std::vector<std::vector<do
 }
 
 
-Ciphertext<DCRTPoly> matrix_multiplication_parallel(std::vector<std::vector<double>> matrix, const Ciphertext<DCRTPoly>& vector, CryptoContext<DCRTPoly> context) {
+Ciphertext<DCRTPoly> matrix_multiplication_parallel(const std::vector<std::vector<double>>& matrix, const Ciphertext<DCRTPoly>& vector, CryptoContext<DCRTPoly> context) {
     uint32_t batchSize = vector->GetEncodingParameters()->GetBatchSize();
 
     //  This will use the same procedure as above but it will include parallel computing
-    matrix = resizeMatrix(matrix, batchSize, batchSize);
-    auto diagonals = diagonal_transformation(matrix);
+    auto diagonals = diagonal_transformation(
+            resizeMatrix(matrix, batchSize, batchSize)
+            );
 
     unsigned int n1 = find_n1(batchSize);
     unsigned int n2 = batchSize / n1;
@@ -97,7 +99,6 @@ Ciphertext<DCRTPoly> matrix_multiplication_parallel(std::vector<std::vector<doub
     uint32_t M = 2 * context->GetRingDimension();
 
     std::vector<Ciphertext<DCRTPoly>> rotCache;
-
     //  A vector which stores the job of each thread in the for of a future object. Each future object will return a two
     //  dimensional C++ array, which will have rotation that should be cached for the term submitted to the job, and the
     //  second element will be the term in the sum which should be added to subResult later
@@ -142,6 +143,8 @@ Ciphertext<DCRTPoly> matrix_multiplication_parallel(std::vector<std::vector<doub
         futures2.push_back(std::async(
                 std::launch::async,
             [&rotCache, &diagonals, &context, k, n1] (Ciphertext<DCRTPoly> subResult) -> Ciphertext<DCRTPoly> {
+                std::vector<std::future<Ciphertext<DCRTPoly>>> tasks;
+
                 for (unsigned int j = 1; j < n1; j++) {
                     Plaintext pl = context->MakeCKKSPackedPlaintext(rotate_plain(diagonals[k * n1 + j], -k * n1));
                     subResult += context->EvalMult(pl, rotCache[j - 1]);
@@ -186,3 +189,5 @@ std::vector<double> plain_addition(std::vector<double> a, const std::vector<doub
 
     return a;
 }
+
+

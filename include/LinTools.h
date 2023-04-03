@@ -31,7 +31,7 @@ using namespace lbcrypto;
  * @param parallel Boolean that toggles parallel computing
  */
 Ciphertext<DCRTPoly> matrix_multiplication(
-        std::vector<std::vector<double>> matrix,
+        const std::vector<std::vector<double>>& matrix,
         const Ciphertext<DCRTPoly>& vector,
         CryptoContext<DCRTPoly> context,
         bool parallel = true
@@ -47,8 +47,8 @@ Ciphertext<DCRTPoly> matrix_multiplication(
  * @param vector Ciphertext vector which should be multiplied
  * @param context Cryptocontext belonging to the ciphertext
  */
-Ciphertext<DCRTPoly> matrix_multiplication_diagonals(
-        std::vector<std::vector<double>> matrix,
+Ciphertext<DCRTPoly> matrix_multiplication_sequential(
+        const std::vector<std::vector<double>>& matrix,
         const Ciphertext<DCRTPoly>& vector,
         CryptoContext<DCRTPoly> context
         );
@@ -62,7 +62,7 @@ Ciphertext<DCRTPoly> matrix_multiplication_diagonals(
  * @param context Cryptocontext belonging to the ciphertext
  */
 Ciphertext<DCRTPoly> matrix_multiplication_parallel(
-        std::vector<std::vector<double>> matrix,
+        const std::vector<std::vector<double>>& matrix,
         const Ciphertext<DCRTPoly>& vector,
         CryptoContext<DCRTPoly> context
         );
@@ -89,5 +89,9 @@ std::vector<double> plain_matrix_multiplication(
  * @param b Second vector of addition.
  */
 std::vector<double> plain_addition(std::vector<double> a, const std::vector<double>& b);
+
+
+
+Ciphertext<DCRTPoly> my_poly_eval (std::vector<double> coefs, Ciphertext<DCRTPoly> cipher);
 
 #endif //TEST_MNIST_LINTOOLS_H

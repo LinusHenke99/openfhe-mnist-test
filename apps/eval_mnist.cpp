@@ -98,7 +98,7 @@ int main(int argc, char** argv) {
 
         //  Applying convolutional layer
         auto startOper = Clock::now();
-        cipher = matrix_multiplication_diagonals(convWeights, cipher, context);
+        cipher = matrix_multiplication(convWeights, cipher, context);
         cipher = context->EvalAdd(cipher, convBiases);
         auto endOper = Clock::now();
         tConv.push_back(time_in_seconds(startOper, endOper));
@@ -116,7 +116,7 @@ int main(int argc, char** argv) {
 
         // Applying first fully connected layer
         startOper = Clock::now();
-        cipher = matrix_multiplication_diagonals(gemm1Weights, cipher, context);
+        cipher = matrix_multiplication(gemm1Weights, cipher, context);
         cipher = context->EvalAdd(cipher, gemm1Biases);
         endOper = Clock::now();
         tGemm1.push_back(time_in_seconds(startOper, endOper));
@@ -134,7 +134,7 @@ int main(int argc, char** argv) {
 
         // Applying second fully connected layer
         startOper = Clock::now();
-        cipher = matrix_multiplication_diagonals(gemm2Weights, cipher, context);
+        cipher = matrix_multiplication(gemm2Weights, cipher, context);
         cipher = context->EvalAdd(cipher, gemm2Biases);
         endOper = Clock::now();
         tGemm2.push_back(time_in_seconds(startOper, endOper));
