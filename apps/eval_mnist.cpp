@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
 
     CryptoContext<DCRTPoly> context;
     KeyPair<DCRTPoly> keys;
-    DeserializeContext(context, keys);
+    DeserializeContext(context, keys, cryptonet);
 
 
     //  Loading the convolutional layer weights and biases
@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
         std::cout << "Making measurement for " << file << std::endl;
 
         Ciphertext<DCRTPoly> cipher;
-        DeserializeCiphertext(cipher, INPUT_DIR + file);
+        DeserializeCiphertext(cipher, INPUT_DIR + file, cryptonet);
 
         //  Applying convolutional layer
         auto startOper = Clock::now();

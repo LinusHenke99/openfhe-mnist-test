@@ -4,7 +4,7 @@ from onnx import numpy_helper
 
 
 def main():
-    m = onnx.load("../model/cryptonets_calibrated.onnx")
+    m = onnx.load("../model/very_sensible_nn/nn_calibrated.onnx")
     # weights sind in den initializer
     # index und name der initializer
     for index, i in enumerate(m.graph.initializer):

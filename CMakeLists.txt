@@ -18,8 +18,10 @@ link_libraries( ${OpenFHE_SHARED_LIBRARIES} )
 
 add_subdirectory(src)
 
-add_executable(test_mnist
-        apps/main.cpp)
+add_executable(mnist_inference_cryptonet
+        apps/mnist_inference_cryptonet.cpp)
+add_executable(mnist_inference_very_sensible_nn
+        apps/mnist_inference_very_sensible_model.cpp)
 add_executable(keygen
         apps/keygen.cpp)
 add_executable(encrypt
@@ -34,7 +36,9 @@ add_executable(test_MLOperators
         apps/test_MLOperators.cpp)
 
 
-target_link_libraries(test_mnist
+target_link_libraries(mnist_inference_cryptonet
+        Components)
+target_link_libraries(mnist_inference_very_sensible_nn
         Components)
 target_link_libraries(keygen
         Components)
@@ -50,7 +54,9 @@ target_link_libraries(test_MLOperators
         Components)
 
 
-install(TARGETS test_mnist
+install(TARGETS mnist_inference_cryptonet
+        RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)
+install(TARGETS mnist_inference_very_sensible_nn
         RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)
 install(TARGETS keygen
         RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)

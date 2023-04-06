@@ -18,12 +18,12 @@ void myReplace(std::string& str,
 
 
 int main(int argc, char** argv) {
-    if(argc != 2) {
-        std::cout << "Give filename as argument." << std::endl;
+    if(argc != 3) {
+        std::cout << "args: <model> <file>" << std::endl;
         return 0;
     }
 
-    std::string fileName = argv[1];
+    std::string fileName = argv[2];
 
     std::vector<double> img = load_image(fileName);
     int size = sqrt(img.size());
@@ -40,9 +40,20 @@ int main(int argc, char** argv) {
     CryptoContext<DCRTPoly> context;
     KeyPair<DCRTPoly> keys;
 
+    std::string modelStr = argv[1];
+    Model model;
+    if (modelStr == "cryptonet") {
+        model = cryptonet;
+    }else if (modelStr == "very_sensible_nn") {
+        model = very_sensible_nn;
+    }else {
+        model = none;
+    }
+
+    std::string subFolder = setSubFolder(model);
 
     std::cout << std::endl;
-    DeserializeContext(context, keys, false);
+    DeserializeContext(context, keys, model, false);
 
     Plaintext IMG = context->MakeCKKSPackedPlaintext(img);
     if(!IMG->Encode()) {
@@ -54,11 +65,11 @@ int main(int argc, char** argv) {
     std::cout << "Ciphertext encrypted." << std::endl;
 
     myReplace(fileName, ".csv", ".txt");
-    myReplace(fileName, "../img/", "");
+    myReplace(fileName, "../img/" + modelStr + "/", "");
 
     std::cout << fileName << std::endl;
 
-    if(!Serial::SerializeToFile(FOLDER + fileName, IMG_cipher, SerType::BINARY)) {
+    if(!Serial::SerializeToFile(FOLDER + subFolder + fileName, IMG_cipher, SerType::BINARY)) {
         std::cerr << "Error Serializing ciphertext." << std::endl;
         exit(1);
     }

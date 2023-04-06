@@ -18,22 +18,29 @@ const std::string FOLDER = "../keys/";
 
 int main (int argc, char** argv) {
 
-    if (argc != 6) {
-        std::cout << "args: <mult depth> <mod size> <first mod size> <security level> <ringdim>" << std::endl;
+    if (argc != 7) {
+        std::cout << "args: <model> <mult depth> <mod size> <first mod size> <security level> <ringdim>" << std::endl;
         return 0;
     }
 
-    uint32_t multDepth = std::stoi(argv[1]);
-    uint32_t scalSize = std::stoi(argv[2]);
-    uint32_t firstModSize = std::stoi(argv[3]);
-    uint32_t securityLevel = std::stoi(argv[4]);
+    std::string model = argv[1];
+    uint32_t multDepth = std::stoi(argv[2]);
+    uint32_t scalSize = std::stoi(argv[3]);
+    uint32_t firstModSize = std::stoi(argv[4]);
+    uint32_t securityLevel = std::stoi(argv[5]);
     uint32_t batchSize = 1024;
+
+    std::string subFolder = "";
+
+    if (model == "cryptonet" || model == "very_sensible_nn") {
+        subFolder = model + "/";
+    }
 
     CCParams<CryptoContextCKKSRNS> parameters;
     parameters.SetMultiplicativeDepth(multDepth);
     parameters.SetScalingModSize(scalSize);
     parameters.SetFirstModSize(firstModSize);
-    parameters.SetRingDim(next_power2(std::stoi(argv[5])));
+    parameters.SetRingDim(next_power2(std::stoi(argv[6])));
 
     switch (securityLevel) {
         case 128:
@@ -77,25 +84,25 @@ int main (int argc, char** argv) {
     context->EvalRotateKeyGen(keys.secretKey, rotations);
     std::cout << "Done!" << std::endl;
 
-    if (!Serial::SerializeToFile(FOLDER + "context.txt", context, SerType::BINARY)) {
+    if (!Serial::SerializeToFile(FOLDER + subFolder + "context.txt", context, SerType::BINARY)) {
         std::cerr << "Error serializing context." << std::endl;
         std::exit(1);
     }
     std::cout << "Cryptocontext serialized!" << std::endl;
 
-    if (!Serial::SerializeToFile(FOLDER + "publicKey.txt", keys.publicKey, SerType::BINARY)) {
+    if (!Serial::SerializeToFile(FOLDER + subFolder + "publicKey.txt", keys.publicKey, SerType::BINARY)) {
         std::cerr << "Error serializing public key." << std::endl;
         std::exit(1);
     }
     std::cout << "Public key serialized!" << std::endl;
 
-    if (!Serial::SerializeToFile(FOLDER + "secretKey.txt", keys.secretKey, SerType::BINARY)) {
+    if (!Serial::SerializeToFile(FOLDER + subFolder + "secretKey.txt", keys.secretKey, SerType::BINARY)) {
         std::cerr << "Error serializing public key." << std::endl;
         std::exit(1);
     }
     std::cout << "Secret key serialized!" << std::endl;
 
-    std::ofstream multKeyFile(FOLDER + "multKey.txt", std::ios::out | std::ios::binary);
+    std::ofstream multKeyFile(FOLDER + subFolder + "multKey.txt", std::ios::out | std::ios::binary);
     if (multKeyFile.is_open()) {
         if (!context->SerializeEvalMultKey(multKeyFile, SerType::BINARY)) {
             std::cerr << "Error serializing multiplication key." << std::endl;
@@ -108,7 +115,7 @@ int main (int argc, char** argv) {
         std::cerr << "Error opening Mult Key file..." << std::endl;
     }
 
-    std::ofstream rotKeyFile(FOLDER + "rotKey.txt", std::ios::out | std::ios::binary);
+    std::ofstream rotKeyFile(FOLDER + subFolder + "rotKey.txt", std::ios::out | std::ios::binary);
     if (rotKeyFile.is_open()) {
         if (!context->SerializeEvalAutomorphismKey(rotKeyFile, SerType::BINARY)) {
             std::cerr << "Error serializing rotation key." << std::endl;
@@ -118,6 +125,10 @@ int main (int argc, char** argv) {
         rotKeyFile.close();
     } else {
         std::cerr << "Error opening Mult Key file..." << std::endl;
+    }
+
+    if (model == "very_sensible_nn") {
+
     }
 
     return 0;

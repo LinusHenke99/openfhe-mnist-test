@@ -3,7 +3,7 @@ from os import listdir
 import pandas as pd
 
 
-DIR = "../model/"
+DIR = "./"
 
 
 def main():
