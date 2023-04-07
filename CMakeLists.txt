@@ -16,6 +16,17 @@ link_directories( ${OPENMP_LIBRARIES} )
 set( CMAKE_EXE_LINKER_FLAGS ${OpenFHE_EXE_LINKER_FLAGS} )
 link_libraries( ${OpenFHE_SHARED_LIBRARIES} )
 
+
+file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+
+foreach(subdir IN ZIP_LISTS keys ciphertexts)
+	file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/${subdir})
+	foreach(model IN ZIP_LISTS very_sensible_nn cryptonet)
+		file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/${subdir}/${model})
+	endforeach()
+endforeach()
+
+
 add_subdirectory(src)
 
 add_executable(mnist_inference_cryptonet
