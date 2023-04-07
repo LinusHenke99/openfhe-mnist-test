@@ -19,10 +19,17 @@ link_libraries( ${OpenFHE_SHARED_LIBRARIES} )
 
 file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
-foreach(subdir IN ZIP_LISTS keys ciphertexts)
-	file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/${subdir})
-	foreach(model IN ZIP_LISTS very_sensible_nn cryptonet)
-		file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/${subdir}/${model})
+set(dirs keys ciphertexts)
+set(models very_sensible_nn cryptonet)
+
+foreach(subdir IN LISTS dirs)
+	set(DIR ${CMAKE_SOURCE_DIR}/${subdir})
+	message(STATUS "Making directory ${DIR}")
+	file(MAKE_DIRECTORY ${DIR})
+	foreach(model IN LISTS models)
+		set(DIR ${CMAKE_SOURCE_DIR}/${subdir}/${model})
+		message(STATUS "Making directory ${DIR}")
+		file(MAKE_DIRECTORY ${DIR})
 	endforeach()
 endforeach()
 
