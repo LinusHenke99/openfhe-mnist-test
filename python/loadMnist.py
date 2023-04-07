@@ -17,7 +17,7 @@ def get_data(data_shape: tuple = (32, 32)) -> tuple:
     )
     test_loader = DataLoader(test_data, batch_size=len(test_data))
     test_dataset_array = next(iter(test_loader))[0].numpy()
-    data = test_dataset_array.reshape(10000, 1, 32, 32).astype(np.float32)
+    data = test_dataset_array.reshape(10000, 1, 28, 28).astype(np.float32)
 
     labels = test_data.targets.numpy()
 
@@ -25,7 +25,7 @@ def get_data(data_shape: tuple = (32, 32)) -> tuple:
 
 
 def main() -> None:
-    data, labels = get_data()
+    data, labels = get_data(data_shape=(28,28))
     
     counters = [0 for _i in range(10)]
 
