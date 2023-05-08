@@ -15,27 +15,19 @@ Ciphertext<DCRTPoly> calculateMean(Ciphertext<DCRTPoly> input, CryptoContext<DCR
 
 Ciphertext<DCRTPoly> batchNorm(Ciphertext<DCRTPoly> input,
                                CryptoContext<DCRTPoly> context,
-                               unsigned int polyDegree,
-                               double xMin,
-                               double xMax,
-                               unsigned int N,
+                               double mean,
+                               double var,
                                double epsilon,
                                std::vector<double> gamma,
                                std::vector<double> beta) {
-
-    auto mean = calculateMean(input, context, N);
-
-    auto varianceAndEpsilon = context->EvalAdd(calculateMean(context->EvalMult(input, input), context, N) - context->EvalMult(mean, mean), epsilon);
-
-    auto oneOverSquareRoot = [](double input) -> double {return 1. / sqrt(input);};
-
-    auto denominator = context->EvalChebyshevFunction(oneOverSquareRoot, varianceAndEpsilon, xMin, xMax, polyDegree);
-
-    auto numerator = input - mean;
 
     Plaintext betas = context->MakeCKKSPackedPlaintext(beta);
 
     Plaintext gammas = context->MakeCKKSPackedPlaintext(gamma);
 
-    return context->EvalAdd(context->EvalMult(gammas, context->EvalMult(numerator, denominator)), betas);
+    Ciphertext<DCRTPoly> term = context->EvalMult(1/sqrt(var + epsilon), context->EvalAdd(input, -mean));
+
+    Ciphertext<DCRTPoly> result = context->EvalAdd(context->EvalMult(term, gammas), betas);
+
+    return result;
 }

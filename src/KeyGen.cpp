@@ -11,8 +11,10 @@ std::vector<int> genRotations (
 
     for (unsigned int k=0; k<n2; k++) {
         resultSet.insert(k*n1);
-        for (unsigned int j=0; j<n1; j++)
-            resultSet.insert((k*n1 + j));
+        for (unsigned int j=0; j<n1; j++) {
+            // resultSet.insert((k*n1 + j));
+            resultSet.insert(j);
+        }
     }
 
     std::vector<int> result(resultSet.size());

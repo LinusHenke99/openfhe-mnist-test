@@ -19,7 +19,7 @@
 #include "cryptocontext-ser.h"
 #include "scheme/ckksrns/ckksrns-ser.h"
 
-enum Model {cryptonet, very_sensible_nn, none};
+enum Model {cryptonet, very_sensible_nn, cifar, none};
 
 using namespace lbcrypto;
 

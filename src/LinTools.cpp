@@ -26,6 +26,7 @@ Ciphertext<DCRTPoly> matrix_multiplication(
         CryptoContext<DCRTPoly> context,
         bool parallel
 ) {
+    std::vector<bool> isZero;
     return parallel ?
            matrix_multiplication_parallel(matrix, vector, context):
            matrix_multiplication_sequential(matrix, vector, context);
@@ -39,6 +40,7 @@ Ciphertext<DCRTPoly> matrix_multiplication_sequential (const std::vector<std::ve
     auto diagonals = diagonal_transformation(
             resizeMatrix(matrix, batchSize, batchSize)
             );
+
 
     //  Finding the optimal configuration for n1 and n2 where batchSize = n1 * n2
     unsigned int n1 = find_n1(batchSize);
@@ -56,10 +58,13 @@ Ciphertext<DCRTPoly> matrix_multiplication_sequential (const std::vector<std::ve
     //  Calculating first sub-sum and caching all rotations of the vector variable needed later
     std::vector<Ciphertext<DCRTPoly>> rotCache;
     for (unsigned int j=1; j<n1; j++) {
-        pl = context->MakeCKKSPackedPlaintext(diagonals[j]);
         Ciphertext<DCRTPoly> rotation = context->EvalFastRotation(vector, j, M, cipherPrecompute);
         rotCache.push_back(rotation);
-        subResult += context->EvalMult(pl, rotation);
+
+        if (!std::all_of(diagonals[j].begin(), diagonals[j].end(), [](double x) {return x==.0;})) {
+            pl = context->MakeCKKSPackedPlaintext(diagonals[j]);
+            subResult += context->EvalMult(pl, rotation);
+        }
     }
 
     Ciphertext<DCRTPoly> result = subResult;
@@ -70,8 +75,10 @@ Ciphertext<DCRTPoly> matrix_multiplication_sequential (const std::vector<std::ve
         subResult = context->EvalMult(pl, vector);
 
         for (unsigned int j=1; j<n1; j++) {
-            pl = context->MakeCKKSPackedPlaintext(rotate_plain(diagonals[k*n1 + j], -k*n1));
-            subResult += context->EvalMult(pl, rotCache[j-1]);
+            if (!std::all_of(diagonals[k*n1 + j].begin(), diagonals[k*n1 + j].end(), [](double x) {return x == .0;})) {
+                pl = context->MakeCKKSPackedPlaintext(rotate_plain(diagonals[k * n1 + j], -k * n1));
+                subResult += context->EvalMult(pl, rotCache[j - 1]);
+            }
         }
 
         result += context->EvalRotate(subResult, k*n1);
@@ -146,8 +153,10 @@ Ciphertext<DCRTPoly> matrix_multiplication_parallel(const std::vector<std::vecto
                 std::vector<std::future<Ciphertext<DCRTPoly>>> tasks;
 
                 for (unsigned int j = 1; j < n1; j++) {
-                    Plaintext pl = context->MakeCKKSPackedPlaintext(rotate_plain(diagonals[k * n1 + j], -k * n1));
-                    subResult += context->EvalMult(pl, rotCache[j - 1]);
+                    if (!std::all_of(diagonals[k * n1 + j].begin(), diagonals[k * n1 + j].end(), [](double x) {return x == .0;})) {
+                        Plaintext pl = context->MakeCKKSPackedPlaintext(rotate_plain(diagonals[k * n1 + j], -k * n1));
+                        subResult += context->EvalMult(pl, rotCache[j - 1]);
+                    }
                 }
 
                 return context->EvalRotate(subResult, k*n1);

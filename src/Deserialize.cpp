@@ -16,6 +16,10 @@ std::string setSubFolder (Model model) {
             subFolder = "very_sensible_nn/";
             break;
 
+        case cifar:
+            subFolder = "cifar/";
+            break;
+
         default:
             subFolder = "";
             break;

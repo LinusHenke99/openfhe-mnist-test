@@ -16,8 +16,7 @@ using namespace lbcrypto;
 
 const std::string FOLDER = "../keys/";
 
-const uint32_t batchSize = 1024;
-const std::vector<uint32_t> LEVEL_BUDGET = {2, 2};
+const std::vector<uint32_t> LEVEL_BUDGET = {3, 3};
 const std::vector<uint32_t> BSGS_DIM = {0, 0};
 const auto SECRET_KEY_DIST = UNIFORM_TERNARY;
 
@@ -28,14 +27,14 @@ int main (int argc, char** argv) {
     if (argc != 8 && argc != 7) {
         std::cout << "args: <model> <mult depth> <mod size> <first mod size> <security level> <ringdim> if you don't "
                      "want to use bootstrapping" << std::endl;
-        std::cout << "args: <model> <approx bootstrap depth> <mod size> <first mod size> <security level> <ringdim> "
+        std::cout << "args: <model> <num iterations> <mod size> <first mod size> <security level> <ringdim> "
                      "<levels used before bootstrapping> if you want to use bootstrapping" << std::endl;
-        std::cout << argc << std::endl;
         return 0;
     } else if (argc == 8) {
         bootstrapping = true;
     }
 
+	uint32_t batchSize = 1024;
 
     std::string model = argv[1];
     uint32_t scalSize = std::stoi(argv[3]);
@@ -46,13 +45,31 @@ int main (int argc, char** argv) {
 
     if (model == "cryptonet" || model == "very_sensible_nn") {
         subFolder = model + "/";
-    }
+    }else if (model == "cifar") {
+		subFolder = model + "/";
+		batchSize = 32768;
+	}
 
     CCParams<CryptoContextCKKSRNS> parameters;
-    parameters.SetRingDim(next_power2(std::stoi(argv[6])));
+    uint32_t ringDim = std::stoi(argv[6]);
+    if (ringDim != 0) {
+        parameters.SetRingDim(next_power2(ringDim));
+    }else {
+		parameters.SetRingDim(batchSize * 2);
+	}
+
+#if NATIVEINT == 128 && !defined(__EMSCRIPTEN__)
+    std::cout << "128 Bit" << std::endl;
+
+#else
+    std::cout << "64 Bit" << std::endl;
+#endif
+
     parameters.SetScalingModSize(scalSize);
     parameters.SetFirstModSize(firstModSize);
     parameters.SetBatchSize(batchSize);
+
+	parameters.SetScalingTechnique(FLEXIBLEAUTO);
 
     switch (securityLevel) {
         case 128:
@@ -73,7 +90,8 @@ int main (int argc, char** argv) {
 
     if (bootstrapping) {
         uint32_t levelsUsedBeforeBootstrapping = std::stoi(argv[7]);
-        uint32_t approxBootDepth = std::stoi(argv[2]);
+        uint32_t numIterations = std::stoi(argv[2]);
+        uint32_t approxBootDepth =  8 + (numIterations - 1);
 
         parameters.SetSecretKeyDist(SECRET_KEY_DIST);
 
@@ -97,7 +115,7 @@ int main (int argc, char** argv) {
     context->Enable(ADVANCEDSHE);
 
     std::cout << "The Cryptocontext has been generated..." << std::endl;
-    std::cout << "q: " << context->GetModulus() << std::endl;
+    std::cout << "log(q): " << log2(context->GetModulus().ConvertToLongDouble()) << std::endl;
     std::cout << "Ring dimension: " << context->GetRingDimension() << std::endl;
 
     if (bootstrapping) {
@@ -115,7 +133,7 @@ int main (int argc, char** argv) {
 
     std::vector<int> rotations = genRotations(batchSize);
 
-    std::cout << "Generating rotation keys..." << std::endl;
+    std::cout << "Generating rotation keys for " << rotations.size() << " rotations..." << std::endl;
     context->EvalRotateKeyGen(keys.secretKey, rotations);
     std::cout << "Done!" << std::endl;
 

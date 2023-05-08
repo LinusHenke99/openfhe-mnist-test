@@ -9,9 +9,10 @@ find_package(OpenFHE REQUIRED)
 find_package(nlohmann_json 3.2.0 REQUIRED)
 
 set( CMAKE_CXX_FLAGS ${OpenFHE_CXX_FLAGS} )
+message(STATUS "Flags are: ${CMAKE_CXX_FLAGS}")
 
 link_directories( ${OpenFHE_LIBDIR} )
-link_directories( ${OPENMP_LIBRARIES} )
+# link_directories( ${OPENMP_LIBRARIES} )
 
 set( CMAKE_EXE_LINKER_FLAGS ${OpenFHE_EXE_LINKER_FLAGS} )
 link_libraries( ${OpenFHE_SHARED_LIBRARIES} )
@@ -20,7 +21,7 @@ link_libraries( ${OpenFHE_SHARED_LIBRARIES} )
 file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 set(dirs keys ciphertexts)
-set(models very_sensible_nn cryptonet)
+set(models very_sensible_nn cryptonet cifar)
 
 foreach(subdir IN LISTS dirs)
 	set(DIR ${CMAKE_SOURCE_DIR}/${subdir})
@@ -52,6 +53,8 @@ add_executable(fix_output
         apps/fix_output.cpp)
 add_executable(test_MLOperators
         apps/test_MLOperators.cpp)
+add_executable(cifar_inference
+		apps/cifar_inference.cpp)
 
 
 target_link_libraries(mnist_inference_cryptonet
@@ -70,6 +73,8 @@ target_link_libraries(fix_output
         Components)
 target_link_libraries(test_MLOperators
         Components)
+target_link_libraries(cifar_inference
+		Components)
 
 
 install(TARGETS mnist_inference_cryptonet
@@ -86,3 +91,5 @@ install(TARGETS eval_mnist
         RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)
 install(TARGETS test_MLOperators
         RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)
+install(TARGETS cifar_inference
+		RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)

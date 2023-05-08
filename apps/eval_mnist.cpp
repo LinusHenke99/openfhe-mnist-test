@@ -52,8 +52,8 @@ int main(int argc, char** argv) {
 
     inFile.close();
 
-    const std::string INPUT_DIR = "../ciphertexts/";
-    const std::string IMG_DIR = "../img/";
+    const std::string INPUT_DIR = "../ciphertexts/cryptonet";
+    const std::string IMG_DIR = "../img/cryptonet/";
 
     CryptoContext<DCRTPoly> context;
     KeyPair<DCRTPoly> keys;
@@ -61,21 +61,21 @@ int main(int argc, char** argv) {
 
 
     //  Loading the convolutional layer weights and biases
-    auto convWeights = loadMatrix("../model/_Conv_0_weights.csv");
+    auto convWeights = loadMatrix("../model/cryptonet/_Conv_0_weights.csv");
     convWeights = transpose(convWeights);
-    std::vector<double> convBiasesVec = loadBias("../model/_Conv_0_bias.csv");
+    std::vector<double> convBiasesVec = loadBias("../model/cryptonet/_Conv_0_bias.csv");
     Plaintext convBiases = context->MakeCKKSPackedPlaintext(convBiasesVec);
 
     //  Loading the gemm3 weights and biases
-    auto gemm1Weights = loadMatrix("../model/_Gemm_3_w.csv");
+    auto gemm1Weights = loadMatrix("../model/cryptonet/_Gemm_3_w.csv");
     gemm1Weights = transpose(gemm1Weights);
-    std::vector<double> gemm1BiasesVec = loadBias("../model/_Gemm_3_bias.csv");
+    std::vector<double> gemm1BiasesVec = loadBias("../model/cryptonet/_Gemm_3_bias.csv");
     Plaintext gemm1Biases = context->MakeCKKSPackedPlaintext(gemm1BiasesVec);
 
     // Loading the gemm5 weights and biases
-    auto gemm2Weights = loadMatrix("../model/_Gemm_5_w.csv");
+    auto gemm2Weights = loadMatrix("../model/cryptonet/_Gemm_5_w.csv");
     gemm2Weights = transpose(gemm2Weights);
-    std::vector<double> gemm2BiasesVec = loadBias("../model/_Gemm_5_bias.csv");
+    std::vector<double> gemm2BiasesVec = loadBias("../model/cryptonet/_Gemm_5_bias.csv");
     Plaintext gemm2Biases = context->MakeCKKSPackedPlaintext(gemm2BiasesVec);
 
 
@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
         std::cout << "Making measurement for " << file << std::endl;
 
         Ciphertext<DCRTPoly> cipher;
-        DeserializeCiphertext(cipher, INPUT_DIR + file, cryptonet);
+        DeserializeCiphertext(cipher, file, cryptonet);
 
         //  Applying convolutional layer
         auto startOper = Clock::now();

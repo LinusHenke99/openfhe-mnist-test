@@ -16,10 +16,8 @@ Ciphertext<DCRTPoly> calculateMean(Ciphertext<DCRTPoly> input, CryptoContext<DCR
 
 Ciphertext<DCRTPoly> batchNorm(Ciphertext<DCRTPoly> input,
                                CryptoContext<DCRTPoly> context,
-                               unsigned int polyDegree,
-                               double xMin,
-                               double xMax,
-                               unsigned int N,
+                               double var,
+                               double mean,
                                double epsilon,
                                std::vector<double> gamma,
                                std::vector<double> beta);
