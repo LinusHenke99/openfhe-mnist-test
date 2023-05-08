@@ -51,8 +51,8 @@ add_executable(eval_mnist
         apps/eval_mnist.cpp)
 add_executable(fix_output
         apps/fix_output.cpp)
-add_executable(test_MLOperators
-        apps/test_MLOperators.cpp)
+# add_executable(test_MLOperators
+#         apps/test_MLOperators.cpp)
 add_executable(cifar_inference
 		apps/cifar_inference.cpp)
 
@@ -71,8 +71,8 @@ target_link_libraries(eval_mnist
         Components)
 target_link_libraries(fix_output
         Components)
-target_link_libraries(test_MLOperators
-        Components)
+# target_link_libraries(test_MLOperators
+#         Components)
 target_link_libraries(cifar_inference
 		Components)
 
@@ -89,7 +89,7 @@ install(TARGETS test_matMul
         RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)
 install(TARGETS eval_mnist
         RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)
-install(TARGETS test_MLOperators
-        RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)
+# install(TARGETS test_MLOperators
+#         RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)
 install(TARGETS cifar_inference
 		RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/bin)
