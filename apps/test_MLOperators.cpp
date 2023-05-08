@@ -91,7 +91,7 @@ int main() {
 
     auto cipherMean = calculateMean(cipherInput, context, BATCHSIZE);
     auto cipherVariance = context->EvalSub(calculateMean(context->EvalMult(cipherInput, cipherInput), context, BATCHSIZE), cipherMean);
-    auto cipherBatchNorm = batchNorm(cipherInput, context, 3, plainVar + EPSILON, plainVar + EPSILON, BATCHSIZE, .0, gammas, betas);
+    // auto cipherBatchNorm = batchNorm(cipherInput, context, 3, plainVar + EPSILON, plainVar + EPSILON, BATCHSIZE, .0, gammas, betas);
 
     std::cout << "Ciphertext Level: " << cipherBatchNorm->GetLevel() << std::endl;
 
